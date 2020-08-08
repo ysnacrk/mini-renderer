@@ -1,0 +1,11 @@
+
+
+
+clas Camera {
+
+
+    public:
+
+    private:
+
+};
