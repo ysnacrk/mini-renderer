@@ -33,5 +33,8 @@ make
 
 - [x] Dynamically generate cubes
 - [ ] Rotate, translate, and scale matrix operations
-- [ ] Cameara movement
-
+- [ ] Camera movement
+- [ ] Keyboard and mouse inputs
+- [ ] Grid floor
+- [ ] Euler angles
+- [ ] Detect clicked object
