@@ -6,11 +6,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <../src/imgui/imgui.h>
 #include <../src/imgui/imgui_impl_glfw_gl3.h>
-
+#include <../include/camera.h>
 
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
 
+Camera camera;
 
 int main(void)
 {
@@ -88,16 +89,6 @@ int main(void)
          0.5f,  0.5f,  0.5f, 
         -0.5f,  0.5f,  0.5f, 
         -0.5f,  0.5f, -0.5f,
-
-/* 
-        -1.0f, -0.5f, -1.0f,
-        -1.0f, -0.5f, 1.0f,
-         1.0f, -0.5f, -1.0f,
-
-        -1.0f, -0.5f, 1.0f,
-        1.0f, -0.5f, 1.0f,
-        1.0f, -0.5f, -1.0f */
-
     };
 
     unsigned int indices[] = {
@@ -114,7 +105,7 @@ int main(void)
     layout.push(GL_FLOAT, 3);
     vao.addBuffer(vertexbuffer, layout);
 
-    Shader program("./shaders/vertex.glsl" , "./shaders/fragment.glsl");
+    Shader program("../shaders/vertex.glsl" , "../shaders/fragment.glsl");
     program.useProgram(program.id);
 
     vao.unbind();
@@ -132,12 +123,8 @@ int main(void)
     glm::vec3 translation;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-
-    glm::mat4 view          = glm::mat4(1.0f);
-    glm::mat4 projection    = glm::mat4(1.0f);
-    view =  glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,-3.0f));
-    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view =  glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,-3.0f));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -145,8 +132,10 @@ int main(void)
         renderer.clear();
         ImGui_ImplGlfwGL3_NewFrame();
         //begin view matrix processing
+
         for(int i = 0; i < cubeList.size() ; i++){
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubeList[i]);
+            
             glm::mat4 mvp = projection * view * model;
             program.useProgram(program.id);
             program.setUniformMat4f("mvp", mvp);
