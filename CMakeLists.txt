@@ -18,7 +18,7 @@ set(PROJECT_SOURCES
                      ${PROJECT_SOURCE_DIR}/imgui/imgui_demo.cpp
                      ${PROJECT_SOURCE_DIR}/imgui/imgui_draw.cpp
                      ${PROJECT_SOURCE_DIR}/imgui/imgui_impl_glfw_gl3.cpp
-                     
+
                      )
 set(PROJECT_HEADERS 
                         ${PROJECT_INCLUDE_DIR}/)

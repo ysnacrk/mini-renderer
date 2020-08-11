@@ -29,12 +29,15 @@ make
 
 ![Screen Shot](/assests/screenshot1.png)
 
+### Camera Movement
+
+![Screen Shot](/assests/screenshot2.gif)
+
 ## TO-DO
 
 - [x] Dynamically generate cubes
 - [ ] Rotate, translate, and scale matrix operations
-- [ ] Camera movement
-- [ ] Keyboard and mouse inputs
-- [ ] Grid floor
-- [ ] Euler angles
-- [ ] Detect clicked object
+- [x] Camera movement
+- [ ] Select specific object
+- [ ] Import and export mesh files
+

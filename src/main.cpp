@@ -6,12 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <../src/imgui/imgui.h>
 #include <../src/imgui/imgui_impl_glfw_gl3.h>
-#include <../include/camera.h>
+#include <../include/utils.h>
 
-const unsigned int SCR_WIDTH = 1000;
-const unsigned int SCR_HEIGHT = 1000;
-
-Camera camera;
 
 int main(void)
 {
@@ -19,6 +15,7 @@ int main(void)
         std::cout << "Error occured initialized object "<<std::endl;
         return -1;
     }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -32,6 +29,10 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -40,14 +41,6 @@ int main(void)
     }    
 
     std::cout << glGetString(GL_VERSION)<<std::endl;
-
-/*     float positions[] = {
-        0.0f, 0.0f, 1.0f, //sol alt 
-        100.0f, 0.0f, 1.0f, //sağ alt
-        0.0f, 100.0f, 1.0f,//sol üst
-        100.0f, 100.0f, 1.0f//sağ üst 
-    };
- */
     float positions[] = {
         -0.5f, -0.5f, -0.5f,  
          0.5f, -0.5f, -0.5f,  
@@ -123,25 +116,35 @@ int main(void)
     glm::vec3 translation;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view =  glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,-3.0f));
+    cubeList.push_back(glm::vec3(0.0, 0.0, 0.0));
+
+    //glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
     while (!glfwWindowShouldClose(window))
     {
+
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // input
+        // -----
+        processInput(window);
 
         renderer.clear();
         ImGui_ImplGlfwGL3_NewFrame();
         //begin view matrix processing
 
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+
         for(int i = 0; i < cubeList.size() ; i++){
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubeList[i]);
-            
             glm::mat4 mvp = projection * view * model;
             program.useProgram(program.id);
             program.setUniformMat4f("mvp", mvp);
             renderer.draw(vao, indexbuffer, program);
         }
-
 
         program.setUniform4f("out_color", clear_color.x, clear_color.y, clear_color.z, 1.0);
 
@@ -183,3 +186,5 @@ int main(void)
 
     return 0;
 }
+
+
